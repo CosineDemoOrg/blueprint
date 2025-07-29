@@ -43,6 +43,15 @@ describe("<TimePicker>", () => {
         containerElement.remove();
     });
 
+    it("sets custom aria-label on AM/PM select when ampmSelectAriaLabel prop is provided", () => {
+        const ariaLabel = "Select AM or PM for time";
+        renderTimePicker({ useAmPm: true, ampmSelectAriaLabel: ariaLabel });
+        // The select lives inside the HTMLSelect wrapper, which gets the TIMEPICKER_AMPM_SELECT class
+        const select = containerElement.querySelector(`.${Classes.TIMEPICKER_AMPM_SELECT} select`);
+        assert.isNotNull(select, "AM/PM select should be rendered");
+        assert.strictEqual(select?.getAttribute("aria-label"), ariaLabel, "aria-label should be set correctly");
+    });
+
     it("renders its contents", () => {
         assert.lengthOf(document.getElementsByClassName(Classes.TIMEPICKER), 0);
 

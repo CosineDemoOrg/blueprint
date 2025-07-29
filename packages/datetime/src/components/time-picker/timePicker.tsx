@@ -26,7 +26,15 @@ import {
     Intent,
 } from "@blueprintjs/core";
 
-import { Classes, DateUtils, type TimePickerProps, TimePrecision } from "../../common";
+import { Classes, DateUtils, type TimePickerProps as BaseTimePickerProps, TimePrecision } from "../../common";
+
+/**
+ * Extends TimePickerProps to include ampmSelectAriaLabel for accessibility of the AM/PM selector.
+ */
+export interface TimePickerProps extends BaseTimePickerProps {
+    /** Accessibility label for the AM/PM selector */
+    ampmSelectAriaLabel?: string;
+}
 import {
     getDefaultMaxTime,
     getDefaultMinTime,
@@ -215,6 +223,7 @@ export class TimePicker extends React.Component<TimePickerProps, TimePickerState
                 disabled={this.props.disabled}
                 onChange={this.handleAmPmChange}
                 value={this.state.isPm ? "pm" : "am"}
+                aria-label={this.props.ampmSelectAriaLabel ?? "Select AM or PM"}
             >
                 <option value="am">AM</option>
                 <option value="pm">PM</option>
