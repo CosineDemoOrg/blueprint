@@ -167,6 +167,46 @@ describe("<MultiSelect>", () => {
         containerElement.remove();
     });
 
+    it("does NOT close popover when clearing query if customTarget is used", async () => {
+        // Mount to document to get input focus behavior
+        const containerElement = document.createElement("div");
+        document.body.appendChild(containerElement);
+
+        const customTarget = () => <Button data-testid="custom-target-button" text="Target" />;
+        const props = {
+            customTarget,
+            popoverProps: { usePortal: false },
+        };
+
+        const wrapper = mount(<MultiSelect<Film> {...defaultProps} {...handlers} {...props} />, {
+            attachTo: containerElement,
+        });
+
+        // Open popover using custom target
+        findTargetButton(wrapper).simulate("click");
+        await delay(100);
+        wrapper.update();
+
+        // Popover should be open
+        assert.isTrue(wrapper.find(Popover).prop("isOpen"), "Popover should be open after click");
+
+        // Find input and simulate a query change to non-empty, then to empty
+        let input = wrapper.find("input");
+        input.simulate("change", { target: { value: "abc" } });
+        wrapper.update();
+        input = wrapper.find("input");
+        assert.strictEqual(input.prop("value"), "abc", "Input should have value 'abc'");
+
+        // Now simulate clearing the query
+        input.simulate("change", { target: { value: "" } });
+        wrapper.update();
+
+        // Popover should still be open
+        assert.isTrue(wrapper.find(Popover).prop("isOpen"), "Popover should remain open after clearing query");
+
+        containerElement.remove();
+    });
+
     function multiselect(props: Partial<MultiSelectProps<Film>> = {}, query?: string) {
         const wrapper = mount(
             <MultiSelect<Film> {...defaultProps} {...handlers} {...props}>

@@ -355,7 +355,9 @@ export class MultiSelect<T> extends AbstractPureComponent<MultiSelectProps<T>, M
     };
 
     private handleQueryChange = (query: string, evt?: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ isOpen: query.length > 0 || (this.props.customTarget == null && !this.props.openOnKeyDown) });
+        if (this.props.customTarget == null) {
+            this.setState({ isOpen: query.length > 0 || !this.props.openOnKeyDown });
+        }
         this.props.onQueryChange?.(query, evt);
     };
 
